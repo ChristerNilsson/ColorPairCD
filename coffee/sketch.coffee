@@ -29,9 +29,11 @@ reset = (delta = 1) ->
 
 createColors = ->
 	result = []
-	for r in '08f'
-		for g in '08f'
-			for b in '08f'
+	values = '08f' # 27=3*3*3
+	#values = '05af' # 64=4*4*4
+	for r in values
+		for g in values
+			for b in values
 				result.push '#'+r+g+b+'8'
 	result
 
@@ -73,7 +75,7 @@ overlap = (x,y) ->
 	for ball in balls 
 		if dist(ball.x,ball.y,x,y) < ball.radie then return true
 	false
-	
+
 createPair = (col) ->
 	radie = int windowWidth/(3+level)
 

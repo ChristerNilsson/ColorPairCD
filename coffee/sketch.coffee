@@ -27,7 +27,7 @@ reset = () ->
 	level++
 	balls = []
 	for i in range level
-		createBall()
+		createBall i
 
 setup = ->
 	createCanvas 800,600
@@ -54,7 +54,7 @@ mousePressed = ->
 				# if active == 0
 				# 	stopp = new Date() 
 
-createBall = ->
+createBall = (i) ->
 	active++
 	x = random 50,width
 	y = random 50,100
@@ -63,4 +63,4 @@ createBall = ->
 
 	radie = 50
 	col = "#f00 #0f0 #00f".split ' '
-	balls.push new Ball radie,x,y,col[0]
+	balls.push new Ball radie,x,y,col[i]

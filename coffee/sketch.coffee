@@ -1,56 +1,68 @@
-level = 1
+level = 0
+
 active = 0
-clicked = []
-circles = []
+start = null
+stopp = null
 
-
-COLORS = "#ff08 #0f08 #00f8".split ' '
-
-class Circle
-	constructor : (@radie, @x, @y, @col) ->
+class Ball
+	constructor : (@radie, @x, @y, @dx, @dy, @r, @g, @b) ->
 		@active = true
 	rita : ->
-		if @active
-			fill @col
-			circle @x,@y,@radie
+		if not @active then return 
+		if @x > width-@radie then @dx = -@dx
+		if @x < @radie then @dx = -@dx
+		@x += @dx
+
+		if @y > height-@radie then @dy = -@dy else @dy+=0.1
+
+		@y += @dy
+		fc @r,@g,@b
+		circle @x,@y,@radie
 	inside : (mx,my) -> dist(@x,@y,mx,my) < @radie
 
-reset = (delta=1) ->
-	level += delta
-	circles = []
+balls = []
+
+reset = () ->
+	start = new Date()
+	level++
+	balls = []
 	for i in range level
-		createCirclePair COLORS[i]
+		createBall()
 
 setup = ->
-	createCanvas windowWidth,windowHeight
+	createCanvas 800,600
 	reset()
+	textSize 100
+	textAlign CENTER,CENTER
 
 draw = ->
 	bg 0
-	for circle in circles
-		circle.rita()
+	for ball in balls
+		ball.rita()
+	if active == 0
+		fc 1
+		text (stopp-start)/1000, width/2,height/2
 
-createCirclePair = (col) ->
+mousePressed = ->
+	if active==0
+		reset()
+	else
+		for ball in balls
+			if ball.inside mouseX,mouseY 
+				ball.active = false
+				active--
+				if active == 0
+					stopp = new Date() 
+
+createBall = ->
 	active++
+	x = random 50,width
+	y = random 50,100
+	dx = random -2,2
+	dy = random -0.3,0.3
 
-	radie = windowHeight/4
-
-	for i in range 2
-		x = random width
-		y = random height
-		circles.push new Circle radie,x,y,col
-
-mousePressed = () ->
-	count = 0
-	for circle in circles
-		if circle.inside mouseX,mouseY
-			curr = circle
-			count++
-	if curr.active
-		if count == 1
-			curr.active = false
-			clicked.push curr
-			if clicked.length == 2 
-				if clicked[0].col != clicked[1].col then reset -1
-				
-
+	radie = 50
+	r = random 1
+	g = random 1
+	b = random 1
+	balls.push new Ball radie,x,y,dx,dy,r,g,b

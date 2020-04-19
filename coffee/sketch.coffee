@@ -8,6 +8,8 @@ class Ball
 		@active = true
 	rita : ->
 		if not @active then return 
+		sc 1
+		sw 4
 		fill @col
 		circle @x,@y,@radie
 	inside : (mx,my) -> 
@@ -34,7 +36,7 @@ createColors = ->
 	for r in values
 		for g in values
 			for b in values
-				result.push '#'+r+g+b+'8'
+				result.push '#'+r+g+b #+'8'
 	result
 
 setup = ->
@@ -46,6 +48,7 @@ draw = ->
 	bg 0.5
 	for ball in balls
 		ball.rita()
+	sw 0
 	fc 1
 	textSize 16
 	text "level #{level}", 100,25

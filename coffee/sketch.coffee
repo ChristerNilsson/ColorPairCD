@@ -5,7 +5,7 @@ start = null
 stopp = null
 
 class Ball
-	constructor : (@radie, @x, @y, @dx, @dy, @r, @g, @b) ->
+	constructor : (@radie, @x, @y, @dx, @dy, @col) ->
 		@active = true
 	rita : ->
 		if not @active then return 
@@ -16,7 +16,7 @@ class Ball
 		if @y > height-@radie then @dy = -@dy else @dy+=0.1
 
 		@y += @dy
-		fc @r,@g,@b
+		fill @col
 		circle @x,@y,@radie
 	inside : (mx,my) -> dist(@x,@y,mx,my) < @radie
 
@@ -62,7 +62,5 @@ createBall = ->
 	dy = random -0.3,0.3
 
 	radie = 50
-	r = random 1
-	g = random 1
-	b = random 1
-	balls.push new Ball radie,x,y,dx,dy,r,g,b
+	col = "#f00 #0f0 #00f".split ' '
+	balls.push new Ball radie,x,y,dx,dy,col[0]

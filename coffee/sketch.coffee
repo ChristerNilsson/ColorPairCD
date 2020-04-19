@@ -39,9 +39,9 @@ mousePressed = ->
 
 createBall = (i) ->
 	active++
-	x = random 50,width
-	y = random 50,100
+	x = random width
+	y = random height
 	
-	radie = 50
-	col = "#f00 #0f0 #00f".split ' '
+	radie = windowWidth/4
+	col = "#f008 #0f08 #00f8".split ' '
 	balls.push new Ball radie,x,y,col[i]

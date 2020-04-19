@@ -24,7 +24,7 @@ reset = (delta = 1) ->
 	console.log 'reset',level
 	if level < 1 then level = 1
 	for i in range level
-		createPair i
+		createPair COLORS[i]
 	console.log balls
 
 createColors = ->
@@ -69,11 +69,19 @@ mousePressed = ->
 			reset -1
 		clicked = []
 
-createPair = (i) ->
+overlap = (x,y) ->
+	for ball in balls 
+		if dist(ball.x,ball.y,x,y) < ball.radie then return true
+	false
+	
+createPair = (col) ->
 	radie = int windowWidth/(3+level)
 
 	for j in range 2
 		active++
 		x = int random width
 		y = int random height
-		balls.push new Ball radie,x,y,COLORS[i]
+		while overlap x,y
+			x = int random width
+			y = int random height
+		balls.push new Ball radie,x,y,col

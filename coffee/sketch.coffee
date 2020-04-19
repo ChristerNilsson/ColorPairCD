@@ -51,7 +51,7 @@ draw = ->
 	text "level #{level}", 100,25
 	text "active #{active}", 100,50
 	for ball,i in balls
-		text JSON.stringify(ball),100,75+i*25
+		text "#{ball.x} #{ball.y} #{ball.col} #{ball.active}",100,75+i*25
 
 mousePressed = ->
 	candidates = (ball for ball in balls when ball.inside mouseX,mouseY)

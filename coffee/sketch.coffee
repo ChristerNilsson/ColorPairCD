@@ -17,7 +17,7 @@ reset = () ->
 	level++
 	balls = []
 	for i in range level
-		createBall i
+		createPair i
 
 setup = ->
 	createCanvas windowWidth,windowHeight
@@ -37,11 +37,12 @@ mousePressed = ->
 				ball.active = false
 				active--
 
-createBall = (i) ->
+createPair = (i) ->
 	active++
-	x = random width
-	y = random height
-	
 	radie = windowWidth/4
 	col = "#f008 #0f08 #00f8".split ' '
-	balls.push new Ball radie,x,y,col[i]
+
+	for j in range 2
+		x = random width
+		y = random height	
+		balls.push new Ball radie,x,y,col[i]

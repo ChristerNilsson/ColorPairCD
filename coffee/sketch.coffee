@@ -53,7 +53,9 @@ draw = ->
 
 mousePressed = ->
 	candidates = (ball for ball in balls when ball.inside mouseX,mouseY)
-	if candidates.length != 1 then reset -1
+	if candidates.length != 1 
+		reset -1
+		return
 	active--
 	ball = candidates[0]
 	ball.active = false
@@ -68,7 +70,7 @@ mousePressed = ->
 		clicked = []
 
 createPair = (i) ->
-	radie = windowWidth/(3+level)
+	radie = int windowWidth/(3+level)
 
 	for j in range 2
 		active++

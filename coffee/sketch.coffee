@@ -1,8 +1,8 @@
 level = 0
 
 active = 0
-start = null
-stopp = null
+# start = null
+# stopp = null
 
 class Ball
 	constructor : (@radie, @x, @y, @col) ->
@@ -23,7 +23,7 @@ class Ball
 balls = []
 
 reset = () ->
-	start = new Date()
+	#start = new Date()
 	level++
 	balls = []
 	for i in range level
@@ -32,16 +32,16 @@ reset = () ->
 setup = ->
 	createCanvas 800,600
 	reset()
-	textSize 100
-	textAlign CENTER,CENTER
+	# textSize 100
+	# textAlign CENTER,CENTER
 
 draw = ->
 	bg 0
 	for ball in balls
 		ball.rita()
-	if active == 0
-		fc 1
-		text (stopp-start)/1000, width/2,height/2
+	# if active == 0
+	# 	fc 1
+	# 	text (stopp-start)/1000, width/2,height/2
 
 mousePressed = ->
 	if active==0
@@ -51,8 +51,8 @@ mousePressed = ->
 			if ball.inside mouseX,mouseY 
 				ball.active = false
 				active--
-				if active == 0
-					stopp = new Date() 
+				# if active == 0
+				# 	stopp = new Date() 
 
 createBall = ->
 	active++

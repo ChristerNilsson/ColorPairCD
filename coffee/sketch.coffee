@@ -1,3 +1,4 @@
+COLORS = null
 level = 0
 active = 0
 clicked = []
@@ -26,12 +27,21 @@ reset = (delta = 1) ->
 		createPair i
 	console.log balls
 
+createColors = ->
+	result = []
+	for r in '08f'
+		for g in '08f'
+			for b in '08f'
+				result.push '#'+r+g+b+'8'
+	result
+
 setup = ->
 	createCanvas windowWidth,windowHeight
+	COLORS = createColors()
 	reset 1
 
 draw = ->
-	bg 0
+	bg 0.5
 	for ball in balls
 		ball.rita()
 	fc 1
@@ -58,11 +68,10 @@ mousePressed = ->
 		clicked = []
 
 createPair = (i) ->
-	radie = windowWidth/4
-	col = "#f008 #0f08 #00f8 #ff08".split ' '
+	radie = windowWidth/(3+level)
 
 	for j in range 2
 		active++
 		x = int random width
 		y = int random height
-		balls.push new Ball radie,x,y,col[i]
+		balls.push new Ball radie,x,y,COLORS[i]

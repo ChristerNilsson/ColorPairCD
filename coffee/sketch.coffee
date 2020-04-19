@@ -20,7 +20,7 @@ reset = () ->
 		createBall i
 
 setup = ->
-	createCanvas 800,600
+	createCanvas windowWidth,windowHeight
 	reset()
 
 draw = ->

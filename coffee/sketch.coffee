@@ -19,6 +19,7 @@ class Ball
 balls = []
 
 reset = (delta = 1) ->
+	COLORS = _.shuffle COLORS
 	active = 0 
 	balls = []
 	clicked = []

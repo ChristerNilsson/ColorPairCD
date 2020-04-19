@@ -31,6 +31,7 @@ reset = (delta = 1) ->
 
 createColors = ->
 	result = []
+	#values = '0f' # 8=2*2*2
 	values = '08f' # 27=3*3*3
 	#values = '05af' # 64=4*4*4
 	for r in values

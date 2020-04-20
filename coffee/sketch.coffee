@@ -8,7 +8,7 @@ class Ball
 	constructor : (@radie, @x, @y, @col) -> @active = true
 	rita : ->
 		if not @active then return 
-		sc 1
+		sc 0
 		sw 4
 		fill @col
 		circle @x,@y,@radie
@@ -31,12 +31,16 @@ createColors = (pattern) -> _.flatten ('#'+r+g+b+'8' for r in pattern for g in p
 setup = ->
 	createCanvas windowWidth,windowHeight
 	COLORS = createColors '05af' # 0f 08f 05af 58be 68ac
+	textSize 100
+	textAlign CENTER,CENTER
 	reset 1
 
 draw = ->
-	bg 0.5
+	bg 1
 	for ball in balls
 		ball.rita()
+	fc 0
+	text level,width/2,height/2
 
 mousePressed = ->
 	candidates = (ball for ball in balls when ball.inside mouseX,mouseY)

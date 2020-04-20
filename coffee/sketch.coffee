@@ -7,18 +7,18 @@ clicked = []
 class Ball
 	constructor : (@radie, @x, @y, @col) -> @active = true
 	rita : ->
-		if not @active then return 
+		if not @active then return
 		sc 0
 		sw 4
 		fill @col
 		circle @x,@y,@radie
-	inside : (mx,my) -> 
+	inside : (mx,my) ->
 		if not @active then return false
 		@radie > dist @x,@y,mx,my
 
 reset = (delta = 1) ->
 	COLORS = _.shuffle COLORS
-	active = 0 
+	active = 0
 	balls = []
 	clicked = []
 	level += delta
@@ -26,7 +26,14 @@ reset = (delta = 1) ->
 	for i in range level
 		createPair COLORS[i]
 
-createColors = (pattern) -> _.flatten ('#'+r+g+b+'8' for r in pattern for g in pattern for b in pattern)
+createColors = (pattern) ->
+	# _.flatten ('#'+r+g+b+'8' for r in pattern for g in pattern for b in pattern)
+	result = []
+	for r in pattern
+		for g in pattern
+			for b in pattern
+				result.push '#'+r+g+b+'8'
+	result
 
 setup = ->
 	createCanvas windowWidth,windowHeight
@@ -55,7 +62,7 @@ mousePressed = ->
 		clicked = []
 
 overlap = (x,y) ->
-	for ball in balls 
+	for ball in balls
 		if 0.5 * ball.radie > dist ball.x,ball.y,x,y then return true
 	false
 
@@ -63,9 +70,8 @@ createPair = (col) ->
 	radie = int 1.5 * windowWidth/(3+level)
 	for j in range 2
 		active++
-		x = int random width
-		y = int random height
-		while overlap x,y
+		loop
 			x = int random width
 			y = int random height
+			break if not overlap x,y
 		balls.push new Ball radie,x,y,col

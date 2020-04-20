@@ -1,11 +1,11 @@
 COLORS = null
 level = 0
 active = 0
+balls = []
 clicked = []
 
 class Ball
-	constructor : (@radie, @x, @y, @col) ->
-		@active = true
+	constructor : (@radie, @x, @y, @col) -> @active = true
 	rita : ->
 		if not @active then return 
 		sc 1
@@ -14,9 +14,7 @@ class Ball
 		circle @x,@y,@radie
 	inside : (mx,my) -> 
 		if not @active then return false
-		dist(@x,@y,mx,my) < @radie
-
-balls = []
+		@radie > dist @x,@y,mx,my
 
 reset = (delta = 1) ->
 	COLORS = _.shuffle COLORS
@@ -24,66 +22,41 @@ reset = (delta = 1) ->
 	balls = []
 	clicked = []
 	level += delta
-	console.log 'reset',level
 	if level < 1 then level = 1
 	for i in range level
 		createPair COLORS[i]
-	console.log balls
 
-createColors = ->
-	result = []
-	#values = '0f' # 8=2*2*2
-	values = '08f' # 27=3*3*3
-	#values = '05af' # 64=4*4*4
-	for r in values
-		for g in values
-			for b in values
-				result.push '#'+r+g+b #+'8'
-	result
+createColors = (pattern) -> _.flatten ('#'+r+g+b+'8' for r in pattern for g in pattern for b in pattern)
 
 setup = ->
 	createCanvas windowWidth,windowHeight
-	COLORS = createColors()
+	COLORS = createColors '05af' # 0f 08f 05af 58be 68ac
 	reset 1
 
 draw = ->
 	bg 0.5
 	for ball in balls
 		ball.rita()
-	sw 0
-	fc 1
-	textSize 16
-	text "level #{level}", 100,25
-	text "active #{active}", 100,50
-	for ball,i in balls
-		text "#{ball.x} #{ball.y} #{ball.col} #{ball.active}",100,75+i*25
 
 mousePressed = ->
 	candidates = (ball for ball in balls when ball.inside mouseX,mouseY)
-	if candidates.length != 1 
-		reset -1
-		return
+	if candidates.length != 1 then return reset -1
 	active--
 	ball = candidates[0]
 	ball.active = false
 	clicked.push ball
-	console.log "clicked.length #{clicked.length}"
 	if clicked.length == 2
-		if active == 0
-			reset 1
-			return
-		if clicked[0].col != clicked[1].col
-			reset -1
+		if active == 0 then return reset 1
+		if clicked[0].col != clicked[1].col then reset -1
 		clicked = []
 
 overlap = (x,y) ->
 	for ball in balls 
-		if dist(ball.x,ball.y,x,y) < ball.radie then return true
+		if 0.5 * ball.radie > dist ball.x,ball.y,x,y then return true
 	false
 
 createPair = (col) ->
-	radie = int windowWidth/(3+level)
-
+	radie = int 1.5 * windowWidth/(3+level)
 	for j in range 2
 		active++
 		x = int random width

@@ -3,18 +3,24 @@ level = 0
 active = 0
 balls = []
 clicked = []
+radie = 0
 
-class Ball
-	constructor : (@radie, @x, @y, @col) -> @active = true
+range = _.range
+
+newBall = (x,y,rgb) ->
+	x : x
+	y : y
+	rgb : rgb
+	active : true
 	rita : ->
 		if not @active then return
-		sc 0
-		sw 4
-		fill @col
-		circle @x,@y,@radie
+		stroke '#000'
+		strokeWeight 4
+		fill @rgb
+		ellipse @x,@y,2*radie
 	inside : (mx,my) ->
 		if not @active then return false
-		@radie > dist @x,@y,mx,my
+		radie > dist @x,@y,mx,my
 
 reset = (delta = 1) ->
 	COLORS = _.shuffle COLORS
@@ -26,7 +32,7 @@ reset = (delta = 1) ->
 	for i in range level
 		createPair COLORS[i]
 
-createColors = (pattern) ->
+createCOLORS = (pattern) ->
 	# _.flatten ('#'+r+g+b+'8' for r in pattern for g in pattern for b in pattern)
 	result = []
 	for r in pattern
@@ -37,16 +43,16 @@ createColors = (pattern) ->
 
 setup = ->
 	createCanvas windowWidth,windowHeight
-	COLORS = createColors '05af' # 0f 08f 05af 58be 68ac
+	COLORS = createCOLORS '05af' # 0f 08f 05af 58be 68ac
 	textSize 100
 	textAlign CENTER,CENTER
 	reset 1
 
 draw = ->
-	bg 1
+	background '#fff'
 	for ball in balls
 		ball.rita()
-	fc 0
+	fill '#000'
 	text level,width/2,height/2
 
 mousePressed = ->
@@ -58,15 +64,15 @@ mousePressed = ->
 	clicked.push ball
 	if clicked.length == 2
 		if active == 0 then return reset 1
-		if clicked[0].col != clicked[1].col then reset -1
+		if clicked[0].rgb != clicked[1].rgb then reset -1
 		clicked = []
 
 overlap = (x,y) ->
 	for ball in balls
-		if 0.5 * ball.radie > dist ball.x,ball.y,x,y then return true
+		if 0.5 * radie > dist ball.x,ball.y,x,y then return true
 	false
 
-createPair = (col) ->
+createPair = (rgb) ->
 	radie = int 1.5 * windowWidth/(3+level)
 	for j in range 2
 		active++
@@ -74,4 +80,4 @@ createPair = (col) ->
 			x = int random width
 			y = int random height
 			break if not overlap x,y
-		balls.push new Ball radie,x,y,col
+		balls.push newBall x,y,rgb

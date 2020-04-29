@@ -1,83 +1,99 @@
-COLORS = null
-level = 0
-active = 0
 balls = []
-clicked = []
-radie = 0
-
+radie = 100
 range = _.range
+#röd blå grön gul svart vit cyan magenta
+#COLORS = "#f008 #00f8 #0f08 #ff08 #0008 #fff8 #0ff8 #f0f8".split " "
+COLORS = []
+clicked = []
+level = 0
+ballClicked = 0
+passive = null
+pattern = "08f"
 
-newBall = (x,y,rgb) ->
-	x : x
-	y : y
-	rgb : rgb
-	active : true
-	rita : ->
-		if not @active then return
-		stroke '#000'
-		strokeWeight 4
-		fill @rgb
-		ellipse @x,@y,2*radie
-	inside : (mx,my) ->
-		if not @active then return false
-		radie > dist @x,@y,mx,my
+overlap = (x1,y1,x2,y2) -> 
+	result = dist(x1,y1,x2,y2) 
+	console.log 'overlap', result,radie
+	result < 0.5 * radie
 
-reset = (delta = 1) ->
-	COLORS = _.shuffle COLORS
-	active = 0
+createColors = (s)->
+	pattern = s
+	result = []
+	for r in s
+		for g in s
+			for b in s
+				result.push "#"+r+g+b+"8"
+	_.shuffle result
+
+reset = (delta)->
+	level += delta
+	if level == 0 then level = 1
+	radie = windowHeight/2/(level+1)**0.4
 	balls = []
 	clicked = []
-	level += delta
-	if level < 1 then level = 1
+	passive = 0
 	for i in range level
-		createPair COLORS[i]
+		for j in range 2
+			antal = 0
+			loop
+				antal++
+				if antal > 100 then break 
+				x = int random width
+				y = int random height
+				count = 0
+				for ball in balls
+					if overlap x,y,ball.x,ball.y then count++
+				if count == 0 then break
 
-createCOLORS = (pattern) ->
-	# _.flatten ('#'+r+g+b+'8' for r in pattern for g in pattern for b in pattern)
-	result = []
-	for r in pattern
-		for g in pattern
-			for b in pattern
-				result.push '#'+r+g+b+'8'
-	result
+			console.log 'antal',antal
+			balls.push {x:x, y:y, rgb:COLORS[i], passive:false}
 
 setup = ->
-	createCanvas windowWidth,windowHeight
-	COLORS = createCOLORS '05af' # 0f 08f 05af 58be 68ac
-	textSize 100
-	textAlign CENTER,CENTER
+	createCanvas windowWidth, windowHeight
+	radie = windowHeight/4
+	params = getParameters()
+	if 0 != _.size params then pattern = params.pattern
+	COLORS = createColors pattern
 	reset 1
 
 draw = ->
-	background '#fff'
-	for ball in balls
-		ball.rita()
-	fill '#000'
+	background 255
+	fill 240
+	textSize height/5
+	textAlign CENTER,CENTER
 	text level,width/2,height/2
+	text pattern,width/2,300
+	textSize height/50
+	fill 0
+	text '0123456789abcdef',width-100,50
+	for ball in balls
+		if not ball.passive
+			fill ball.rgb 
+			ellipse ball.x,ball.y,radie*2
+
+keyPressed = ->
+	# if key=="2" 
+	# 	COLORS=createColors "0f"
+	# 	reset 0
+	# if key=="3" 
+	# 	COLORS=createColors "08f"
+	# 	reset 0
+	# if key=="4" 
+	# 	COLORS=createColors "05af"
+	# 	reset 0
+	# if key=="5" 
+	# 	COLORS=createColors "048bf"
+	# 	reset 0
 
 mousePressed = ->
-	candidates = (ball for ball in balls when ball.inside mouseX,mouseY)
-	if candidates.length != 1 then return reset -1
-	active--
-	ball = candidates[0]
-	ball.active = false
-	clicked.push ball
-	if clicked.length == 2
-		if active == 0 then return reset 1
-		if clicked[0].rgb != clicked[1].rgb then reset -1
-		clicked = []
-
-overlap = (x,y) ->
-	for ball in balls
-		if 0.5 * radie > dist ball.x,ball.y,x,y then return true
-	false
-
-createPair = (rgb) ->
-	radie = int 1.5 * windowWidth/(3+level)
-	for j in range 2
-		active++
-		loop
-			x = int random width
-			y = int random height
-			break if not overlap x,y
-		balls.push newBall x,y,rgb
+	ballClicked = 0
+	for ball in balls 
+		if not ball.passive and radie > dist ball.x,ball.y, mouseX, mouseY
+			ballClicked++
+			b = ball
+	if ballClicked != 1 then return reset -1
+	passive++
+	clicked.push b 
+	b.passive = true
+	if clicked.length != 2 then return
+	if clicked[1].rgb != clicked[0].rgb then return reset -1 else clicked = []
+	if passive == balls.length then return reset 1
